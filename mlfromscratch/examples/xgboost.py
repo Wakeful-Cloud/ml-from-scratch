@@ -1,35 +1,44 @@
 from __future__ import division, print_function
-import numpy as np
 from sklearn import datasets
-import matplotlib.pyplot as plt
-import progressbar
-from mlfromscratch.utils import train_test_split, standardize, to_categorical, normalize
-from mlfromscratch.utils import mean_squared_error, accuracy_score, Plot
+from mlfromscratch.utils import train_test_split
 from mlfromscratch.supervised_learning import XGBoost
+from dill import dumps, loads
 
 def main():
-
-    print ("-- XGBoost --")
-
+    # Load data
     data = datasets.load_iris()
-    X = data.data
+    x = data.data
     y = data.target
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, seed=2)  
+    # Split data
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, seed=2)
 
-    clf = XGBoost()
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
+    # Group testing data by category
+    categories = [[], [], []]
+    for index, category in enumerate(y_test):
+        categories[category].append(x_test[index])
 
-    accuracy = accuracy_score(y_test, y_pred)
+    # # Train
+    # clf = XGBoost()
+    # clf.fit(x_train, y_train)
 
-    print ("Accuracy:", accuracy)
+    # print(clf.predict(categories[0]), clf.predict(categories[1]), clf.predict(categories[2]))
 
-    Plot().plot_in_2d(X_test, y_pred, 
-        title="XGBoost", 
-    accuracy=accuracy, 
-    legend_labels=data.target_names)
+    # with open("training.pckl", "wb") as file:
+    #     file.write(dumps(clf.trees))
 
+    clf = {}
+    with open("training.pckl", "rb") as file:
+        clf = loads(file.read())
+
+    # Loop over each iris category
+    for category in categories:
+        # Loop over each iris
+        for row in category:
+            # Loop 100 times to make things take longer
+            for i in range(0, 10000):
+                # Predict the entire category
+                clf.predict([row])
 
 if __name__ == "__main__":
     main()
