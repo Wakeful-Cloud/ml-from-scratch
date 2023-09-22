@@ -7,3 +7,4 @@ scipy==1.2.3
 progressbar33==2.4
 terminaltables==3.1.10
 gym==0.1.0
+monotonic==1.6

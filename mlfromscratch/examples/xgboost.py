@@ -3,6 +3,11 @@ from sklearn import datasets
 from mlfromscratch.utils import train_test_split
 from mlfromscratch.supervised_learning import XGBoost
 from dill import dumps, loads
+from monotonic import monotonic
+from os.path import dirname, join
+
+# Get the directory name of this script
+__dirname__ = dirname(__file__)
 
 def main():
     # Load data
@@ -28,17 +33,29 @@ def main():
     #     file.write(dumps(clf.trees))
 
     clf = {}
-    with open("training.pckl", "rb") as file:
+    with open(join(__dirname__, "..", "..", "training.pckl"), "rb") as file:
         clf = loads(file.read())
 
+    # Log the header
+    print("# [DESCRIPTION] status: entry status (start: starting category, finished: finished category)")
+    print("# [DESCRIPTION] time: system monotonic time")
+    print("# [DESCRIPTION] category: dataset category")
+    print("status,time,category")
+
     # Loop over each iris category
-    for category in categories:
+    for category_index, category in enumerate(categories):
         # Loop over each iris
-        for row in category:
-            # Loop 100 times to make things take longer
+        for iris in category:
+            # Log the entry
+            print("start,%.9f,%d" % (monotonic(), category_index))
+
+            # Loop 10000 times to make things take longer
             for i in range(0, 10000):
-                # Predict the entire category
-                clf.predict([row])
+                # Predict the individual iris
+                clf.predict([iris])
+
+            # Log the entry
+            print("finished,%.9f,%d" % (monotonic(), category_index))
 
 if __name__ == "__main__":
     main()
