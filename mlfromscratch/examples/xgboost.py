@@ -37,7 +37,7 @@ def main():
         clf = loads(file.read())
 
     # Log the header
-    print("# [DESCRIPTION] status: entry status (start: starting iris, finished: finished iris)")
+    print("# [DESCRIPTION] status: entry status (start: starting iris, end: end iris)")
     print("# [DESCRIPTION] time: system monotonic time")
     print("# [DESCRIPTION] category: dataset category index")
     print("# [DESCRIPTION] entry: dataset category entry index")
@@ -56,7 +56,7 @@ def main():
                 clf.predict([iris])
 
             # Log the entry
-            print("finished,%.9f,%d,%d" % (monotonic(), category_index, iris_index))
+            print("end,%.9f,%d,%d" % (monotonic(), category_index, iris_index))
 
 if __name__ == "__main__":
     main()
