@@ -37,17 +37,18 @@ def main():
         clf = loads(file.read())
 
     # Log the header
-    print("# [DESCRIPTION] status: entry status (start: starting category, finished: finished category)")
+    print("# [DESCRIPTION] status: entry status (start: starting iris, finished: finished iris)")
     print("# [DESCRIPTION] time: system monotonic time")
-    print("# [DESCRIPTION] category: dataset category")
-    print("status,time,category")
+    print("# [DESCRIPTION] category: dataset category index")
+    print("# [DESCRIPTION] entry: dataset category entry index")
+    print("status,time,category,entry")
 
     # Loop over each iris category
     for category_index, category in enumerate(categories):
         # Loop over each iris
-        for iris in category:
+        for iris_index, iris in enumerate(category):
             # Log the entry
-            print("start,%.9f,%d" % (monotonic(), category_index))
+            print("start,%.9f,%d,%d" % (monotonic(), category_index, iris_index))
 
             # Loop 10000 times to make things take longer
             for i in range(0, 10000):
@@ -55,7 +56,7 @@ def main():
                 clf.predict([iris])
 
             # Log the entry
-            print("finished,%.9f,%d" % (monotonic(), category_index))
+            print("finished,%.9f,%d,%d" % (monotonic(), category_index, iris_index))
 
 if __name__ == "__main__":
     main()
